@@ -1,4 +1,4 @@
-FROM nginx:1.29.4-alpine-slim
+FROM nginx:1.31.2-alpine-slim
 
 LABEL org.opencontainers.image.source=https://github.com/felixzmn/bentobox
 
