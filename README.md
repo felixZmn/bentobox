@@ -19,7 +19,7 @@ The configuration is done via the `config.json` file. You can find an example co
 ### Docker
 
 ```shell
-VERSION=2.2.0
+VERSION=2.2.1
 docker build -t ghcr.io/felixzmn/docker/bentobox:$VERSION -t ghcr.io/felixzmn/docker/bentobox:latest .
 docker push ghcr.io/felixzmn/docker/bentobox:$VERSION
 docker push ghcr.io/felixzmn/docker/bentobox:latest
