@@ -2,7 +2,7 @@
 
 ## 1. Server image
 
-- **Decision**: Use the official image `docker.io/library/nginx:1.31.3-alpine-slim`. Pin that tag in `helm/values.yaml`. Do not default the tag from the chart `appVersion`. Reject an empty tag and the tag `latest` when the chart renders.
+- **Decision**: Use the official image `docker.io/library/nginx:1.31.8-alpine-slim`. Pin that tag in `helm/values.yaml`. Do not default the tag from the chart `appVersion`. Reject an empty tag and the tag `latest` when the chart renders.
 - **Rationale**: The project already runs this official tag as the base of the custom image. Keeping the tag means this change does not also upgrade nginx. A later upgrade is one edit to `image.tag`. The chart version can move when the page or chart changes without publishing a new image.
 - **Alternatives considered**: Keep building `ghcr.io/felixzmn/docker/bentobox` (rejected: the spec and constitution forbid a project image). `nginxinc/nginx-unprivileged` (rejected: a second image line, while the official library image already supports a non-root read-only start when the config and writable paths are mounted). Tracking `latest` (rejected: constitution).
 
@@ -38,6 +38,6 @@
 
 ## 7. Icon font
 
-- **Decision**: Do not add `iconoir.css` or an icon package. Leave the existing stylesheet link in `index.html` unchanged.
-- **Rationale**: The file is not in the repository today, and the custom image only copies `html/`. Adding it would be a new dependency outside this feature. The shipped page stays as it is.
-- **Alternatives considered**: Vendor Iconoir into the chart (rejected: new files and a dependency the feature does not ask for).
+- **Decision**: Move the existing `html/iconoir.css` to `helm/files/iconoir.css` and publish `helm/files/iconoir.css.gz` on the ConfigMap. Nginx serves `/iconoir.css` with `gzip_static` for clients that accept gzip. The `index.html` link stays unchanged.
+- **Rationale**: The stylesheet is already in the repository (about 2.8MB) and the current image copies it with the page. A ConfigMap cannot hold the uncompressed file. The gzip copy is about 249KB, so the same ConfigMap can still serve the icons. Local preview serves the uncompressed file directly.
+- **Alternatives considered**: Omit the stylesheet (rejected: the deployed page would lose its icons). A second volume or a custom image for this one file (rejected: one attachment path, no project image).

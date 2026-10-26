@@ -29,7 +29,7 @@ description: "Task list for shipping Bento-Box on a pinned official nginx image"
 
 **Purpose**: Create the chart directory that will hold the only copy of the page
 
-- [ ] T001 Create the `helm/files/` directory described in `specs/001-default-nginx-deploy/plan.md`
+- [x] T001 Create the `helm/files/` directory described in `specs/001-default-nginx-deploy/plan.md`
 
 ---
 
@@ -39,12 +39,12 @@ description: "Task list for shipping Bento-Box on a pinned official nginx image"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 [P] Move `html/index.html` to `helm/files/index.html` with the current markup unchanged, including the existing `iconoir.css` link. Do not add `iconoir.css`. Constraint: "The only document served at `/`. Current markup stays."
-- [ ] T003 [P] Move `html/style.css` to `helm/files/style.css` unchanged. Constraint: "Stylesheet linked from the page, including dark mode and the phone/desktop layout."
-- [ ] T004 [P] Move `html/script.js` to `helm/files/script.js` unchanged. Constraint: "Loads `config.json` and fills the title, subtitle, and links."
-- [ ] T005 [P] Move `html/config.json` to `helm/files/config.json` unchanged for local preview. Constraint: "The example file `helm/files/config.json` is for local preview. The running site uses the `config` object in `helm/values.yaml`."
-- [ ] T006 [P] Write `helm/files/server.conf` as the full main nginx config and delete the root `server.conf`. Mount target is `/etc/nginx/nginx.conf`. Required rules: listen port `8080`; site root `/usr/share/nginx/html`; unknown path `404`; process id and temp files under `/tmp` only (`pid /tmp/nginx.pid`, `client_body_temp_path`, `proxy_temp_path`, `fastcgi_temp_path`, `uwsgi_temp_path`, `scgi_temp_path`); logs to stdout and stderr; stock `conf.d` not included; `user` directive absent; include the image file `/etc/nginx/mime.types`
-- [ ] T007 Remove the emptied `html/` directory after T002–T005 so the page has one copy under `helm/files/`
+- [x] T002 [P] Move `html/index.html` to `helm/files/index.html` with the current markup unchanged, including the existing `iconoir.css` link. Do not add `iconoir.css`. Constraint: "The only document served at `/`. Current markup stays."
+- [x] T003 [P] Move `html/style.css` to `helm/files/style.css` unchanged. Constraint: "Stylesheet linked from the page, including dark mode and the phone/desktop layout."
+- [x] T004 [P] Move `html/script.js` to `helm/files/script.js` unchanged. Constraint: "Loads `config.json` and fills the title, subtitle, and links."
+- [x] T005 [P] Move `html/config.json` to `helm/files/config.json` unchanged for local preview. Constraint: "The example file `helm/files/config.json` is for local preview. The running site uses the `config` object in `helm/values.yaml`."
+- [x] T006 [P] Write `helm/files/server.conf` as the full main nginx config and delete the root `server.conf`. Mount target is `/etc/nginx/nginx.conf`. Required rules: listen port `8080`; site root `/usr/share/nginx/html`; unknown path `404`; process id and temp files under `/tmp` only (`pid /tmp/nginx.pid`, `client_body_temp_path`, `proxy_temp_path`, `fastcgi_temp_path`, `uwsgi_temp_path`, `scgi_temp_path`); logs to stdout and stderr; stock `conf.d` not included; `user` directive absent; include the image file `/etc/nginx/mime.types`
+- [x] T007 Remove the emptied `html/` directory after T002–T005 so the page has one copy under `helm/files/`
 
 **Checkpoint**: Page files and server settings live only in `helm/files/`
 
@@ -54,15 +54,15 @@ description: "Task list for shipping Bento-Box on a pinned official nginx image"
 
 **Goal**: An operator deploys the current landing page with official nginx and the chart files. No custom image is built.
 
-**Independent Test**: Render or deploy with only `docker.io/library/nginx:1.31.3-alpine-slim` and the chart files. `/` returns the project page, not the nginx welcome page.
+**Independent Test**: Render or deploy with only `docker.io/library/nginx:1.31.8-alpine-slim` and the chart files. `/` returns the project page, not the nginx welcome page.
 
 ### Implementation for User Story 1
 
-- [ ] T008 [P] [US1] Load the site into the existing ConfigMap in `helm/templates/config.yaml`: `index.html`, `style.css`, `script.js`, and `server.conf` via `.Files.Get` from `helm/files/`, and `config.json` from `{{ .Values.config | toJson }}`. `config.json` is not a Secret. `title` is a string, `subtitle` is a string, and `links` is a list of `{ url, icon }`
-- [ ] T009 [P] [US1] Set the server release and locked-down defaults in `helm/values.yaml`: `image.repository` `docker.io/library/nginx`, `image.tag` `1.31.3-alpine-slim`, `imagePullSecrets` empty, `podSecurityContext.fsGroup` `1000`, `runAsNonRoot: true`, `runAsUser: 1000`, `runAsGroup: 1000`, drop every capability, and `readOnlyRootFilesystem: true`. Keep the existing `config` object. Do not put a registry credential in the file
-- [ ] T010 [P] [US1] Delete `Dockerfile` and `.dockerignore` so shipping the site does not build an image
-- [ ] T011 [P] [US1] Leave `helm/templates/service.yaml` as `ClusterIP` port `8080`, and do not edit `helm/templates/ingress.yaml` or `helm/templates/httproute.yaml`, so the published hostname stays TLS-only
-- [ ] T012 [US1] Serve that ConfigMap from `helm/templates/deployment.yaml` using `{{ .Values.image.repository }}:{{ .Values.image.tag }}`. Mount `index.html`, `style.css`, `script.js`, and `config.json` read-only under `/usr/share/nginx/html/`, and mount `server.conf` read-only at `/etc/nginx/nginx.conf`. Replace the `/var/cache/nginx` and `/run` volumes with one `emptyDir` at `/tmp` with `sizeLimit: 64Mi`. Keep the `/` liveness and readiness probes. Add no container, host path, or host network
+- [x] T008 [P] [US1] Load the site into the existing ConfigMap in `helm/templates/config.yaml`: `index.html`, `style.css`, `script.js`, and `server.conf` via `.Files.Get` from `helm/files/`, and `config.json` from `{{ .Values.config | toJson }}`. `config.json` is not a Secret. `title` is a string, `subtitle` is a string, and `links` is a list of `{ url, icon }`
+- [x] T009 [P] [US1] Set the server release and locked-down defaults in `helm/values.yaml`: `image.repository` `docker.io/library/nginx`, `image.tag` `1.31.8-alpine-slim`, `imagePullSecrets` empty, `podSecurityContext.fsGroup` `1000`, `runAsNonRoot: true`, `runAsUser: 1000`, `runAsGroup: 1000`, drop every capability, and `readOnlyRootFilesystem: true`. Keep the existing `config` object. Do not put a registry credential in the file
+- [x] T010 [P] [US1] Delete `Dockerfile` and `.dockerignore` so shipping the site does not build an image
+- [x] T011 [P] [US1] Leave `helm/templates/service.yaml` as `ClusterIP` port `8080`, and do not edit `helm/templates/ingress.yaml` or `helm/templates/httproute.yaml`, so the published hostname stays TLS-only
+- [x] T012 [US1] Serve that ConfigMap from `helm/templates/deployment.yaml` using `{{ .Values.image.repository }}:{{ .Values.image.tag }}`. Mount `index.html`, `style.css`, `script.js`, and `config.json` read-only under `/usr/share/nginx/html/`, and mount `server.conf` read-only at `/etc/nginx/nginx.conf`. Replace the `/var/cache/nginx` and `/run` volumes with one `emptyDir` at `/tmp` with `sizeLimit: 64Mi`. Keep the `/` liveness and readiness probes. Add no container, host path, or host network
 
 **Checkpoint**: User Story 1 is deployable without a project image
 
@@ -76,9 +76,9 @@ description: "Task list for shipping Bento-Box on a pinned official nginx image"
 
 ### Implementation for User Story 2
 
-- [ ] T013 [US2] In `helm/templates/deployment.yaml`, fail the render when `image.tag` is empty or `latest`, and do not default the tag from `.Chart.AppVersion`. Constraint: "A specific nginx tag. Initial value `1.31.3-alpine-slim`. Empty and `latest` are invalid."
-- [ ] T014 [P] [US2] Set `version` and `appVersion` in `helm/Chart.yaml` to `2.3.0` together. They must not track `image.tag` `1.31.3-alpine-slim`
-- [ ] T015 [US2] Rewrite the build and release sections of `README.md` so shipping and upgrading use the chart and `image.tag` in `helm/values.yaml`. Remove the `docker build` and `docker push` commands for `ghcr.io/felixzmn/docker/bentobox`
+- [x] T013 [US2] In `helm/templates/deployment.yaml`, fail the render when `image.tag` is empty or `latest`, and do not default the tag from `.Chart.AppVersion`. Constraint: "A specific nginx tag. Initial value `1.31.8-alpine-slim`. Empty and `latest` are invalid."
+- [x] T014 [P] [US2] Set `version` and `appVersion` in `helm/Chart.yaml` to `2.3.0` together. They must not track `image.tag` `1.31.8-alpine-slim`
+- [x] T015 [US2] Rewrite the build and release sections of `README.md` so shipping and upgrading use the chart and `image.tag` in `helm/values.yaml`. Remove the `docker build` and `docker push` commands for `ghcr.io/felixzmn/docker/bentobox`
 
 **Checkpoint**: A server upgrade is one tag change and one redeploy
 
@@ -88,12 +88,12 @@ description: "Task list for shipping Bento-Box on a pinned official nginx image"
 
 **Goal**: A page, visitor-config, or server-setting change publishes on the same nginx tag.
 
-**Independent Test**: Change `config.title` or a file in `helm/files/` and render again. `image.tag` stays `1.31.3-alpine-slim`, and the pod-template checksum changes.
+**Independent Test**: Change `config.title` or a file in `helm/files/` and render again. `image.tag` stays `1.31.8-alpine-slim`, and the pod-template checksum changes.
 
 ### Implementation for User Story 3
 
-- [ ] T016 [US3] Add a pod-template checksum annotation in `helm/templates/deployment.yaml` over `helm/templates/config.yaml` (the packaged `helm/files/` content and `.Values.config`) so a content change rolls the pod. `subPath` mounts do not refresh a running pod
-- [ ] T017 [US3] Document in `README.md` that local preview is `python3 -m http.server` from `helm/files/`, and that editing `helm/files/` or `config.title`, `config.subtitle`, and `config.links` in `helm/values.yaml` is published with a chart upgrade without changing `image.tag`
+- [x] T016 [US3] Add a pod-template checksum annotation in `helm/templates/deployment.yaml` over `helm/templates/config.yaml` (the packaged `helm/files/` content and `.Values.config`) so a content change rolls the pod. `subPath` mounts do not refresh a running pod
+- [x] T017 [US3] Document in `README.md` that local preview is `python3 -m http.server` from `helm/files/`, and that editing `helm/files/` or `config.title`, `config.subtitle`, and `config.links` in `helm/values.yaml` is published with a chart upgrade without changing `image.tag`
 
 **Checkpoint**: Page updates and server upgrades are independent
 
@@ -103,7 +103,7 @@ description: "Task list for shipping Bento-Box on a pinned official nginx image"
 
 **Purpose**: Check the finished chart against the quickstart
 
-- [ ] T018 Run sections 1–3 of `specs/001-default-nginx-deploy/quickstart.md`. Section 4 stays optional
+- [x] T018 Run sections 1–3 of `specs/001-default-nginx-deploy/quickstart.md`. Section 4 stays optional
 
 ---
 
@@ -161,7 +161,7 @@ Task: "T012 Mount the ConfigMap and /tmp in helm/templates/deployment.yaml"
 
 1. Complete Phase 1 and Phase 2
 2. Complete Phase 3 (T008–T012)
-3. Stop and render the chart: image `docker.io/library/nginx:1.31.3-alpine-slim`, five ConfigMap keys, read-only site mounts, no `Dockerfile`
+3. Stop and render the chart: image `docker.io/library/nginx:1.31.8-alpine-slim`, five ConfigMap keys, read-only site mounts, no `Dockerfile`
 
 ### Incremental Delivery
 

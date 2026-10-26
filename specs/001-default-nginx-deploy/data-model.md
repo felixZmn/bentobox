@@ -42,7 +42,7 @@ The file `helm/files/server.conf`, mounted read-only as `/etc/nginx/nginx.conf`.
 | Field | Rules |
 | --- | --- |
 | `image.repository` | `docker.io/library/nginx` |
-| `image.tag` | A specific nginx tag. Initial value `1.31.3-alpine-slim`. Empty and `latest` are invalid. |
+| `image.tag` | A specific nginx tag. Initial value `1.31.8-alpine-slim`. Empty and `latest` are invalid. |
 | Chart `version` / `appVersion` | Move together when the chart or site defaults change. They do not track `image.tag`. |
 
 ## Relationships

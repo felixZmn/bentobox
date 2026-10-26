@@ -6,15 +6,15 @@
 
 ## Summary
 
-Ship the current landing page on the official nginx image `docker.io/library/nginx:1.31.3-alpine-slim`, pinned in the Helm chart. Delete the project image build. Attach the page and server settings through the existing ConfigMap, mounted read-only, so a server upgrade is an image-tag change and a page change is a chart upgrade.
+Ship the current landing page on the official nginx image `docker.io/library/nginx:1.31.8-alpine-slim`, pinned in the Helm chart. Delete the project image build. Attach the page and server settings through the existing ConfigMap, mounted read-only, so a server upgrade is an image-tag change and a page change is a chart upgrade.
 
 The canonical page and server files move into `helm/files/` because Helm can only package files inside the chart. `server.conf` becomes the full main nginx config for a non-root, read-only start: listen on `8080`, temp files and the pid under `/tmp`, and no load of the image's stock site. One size-limited `emptyDir` at `/tmp` is the only writable mount. `fsGroup` and `runAsGroup` `1000` let that non-root user write it. Chart defaults otherwise stay as locked down as they are now, and `imagePullSecrets` defaults to empty.
 
 ## Technical Context
 
-**Language/Version**: Static HTML, CSS, and JavaScript. Helm chart. Official nginx `1.31.3-alpine-slim`.
+**Language/Version**: Static HTML, CSS, and JavaScript. Helm chart. Official nginx `1.31.8-alpine-slim`.
 
-**Primary Dependencies**: `docker.io/library/nginx:1.31.3-alpine-slim`. No new libraries. Iconoir is not added.
+**Primary Dependencies**: `docker.io/library/nginx:1.31.8-alpine-slim`. No new libraries. The existing Iconoir stylesheet moves with the page and is published gzip-compressed.
 
 **Storage**: One ConfigMap for the page, visitor config, and server settings. One `emptyDir` at `/tmp` for nginx temp files. No database.
 
@@ -36,7 +36,7 @@ The canonical page and server files move into `helm/files/` because Helm can onl
 
 | Gate | Before research | After design |
 | --- | --- | --- |
-| One pinned official nginx image; no project build; tag is not `latest` | Pass | Pass. `1.31.3-alpine-slim` is explicit. Dockerfile and `.dockerignore` are removed. |
+| One pinned official nginx image; no project build; tag is not `latest` | Pass | Pass. `1.31.8-alpine-slim` is explicit. Dockerfile and `.dockerignore` are removed. |
 | Page and server settings supplied at deploy time, read-only, by one mechanism | Pass | Pass. One ConfigMap. `/tmp` is scratch, not a second attachment path. |
 | Non-root, drop capabilities, read-only root, no host path, host network, or extra capabilities | Pass | Pass. `fsGroup` / `runAsGroup` `1000` only make the temp volume writable. |
 | No secrets in git; public config stays in values; no secrets workflow | Pass | Pass. `imagePullSecrets` defaults to empty. `config.json` stays a ConfigMap key. |

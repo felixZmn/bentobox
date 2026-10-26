@@ -27,7 +27,7 @@ helm template bentobox helm
 
 Confirm the render:
 
-- Image is `docker.io/library/nginx:1.31.3-alpine-slim`.
+- Image is `docker.io/library/nginx:1.31.8-alpine-slim`.
 - Rendering fails if `image.tag` is empty or `latest`.
 - The container is non-root, user and group `1000`, read-only root, all capabilities dropped, and `fsGroup` is `1000`.
 - One ConfigMap holds `index.html`, `style.css`, `script.js`, `config.json`, and `server.conf`.

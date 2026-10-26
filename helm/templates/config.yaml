@@ -7,3 +7,13 @@ metadata:
 data:
   config.json: |
     {{ .Values.config | toJson }}
+  index.html: |
+{{ .Files.Get "files/index.html" | indent 4 }}
+  style.css: |
+{{ .Files.Get "files/style.css" | indent 4 }}
+  script.js: |
+{{ .Files.Get "files/script.js" | indent 4 }}
+  server.conf: |
+{{ .Files.Get "files/server.conf" | indent 4 }}
+binaryData:
+  iconoir.css.gz: {{ .Files.Get "files/iconoir.css.gz" | b64enc | quote }}

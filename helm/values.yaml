@@ -1,12 +1,11 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/felixzmn/docker/bentobox
+  repository: docker.io/library/nginx
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: "1.31.8-alpine-slim"
 
-imagePullSecrets:
-  - name: regcred
+imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
@@ -15,16 +14,17 @@ podLabels:
   app.kubernetes.io/component: bentobox
 
 
-podSecurityContext: {}
-  # fsGroup: 2000
+podSecurityContext:
+  fsGroup: 1000
 
-securityContext: 
+securityContext:
   capabilities:
     drop:
     - ALL
   readOnlyRootFilesystem: true
   runAsNonRoot: true
   runAsUser: 1000
+  runAsGroup: 1000
 
 service:
   type: ClusterIP
